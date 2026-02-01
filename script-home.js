@@ -1,4 +1,4 @@
-// Version: 2026-0202-0300
+// Version: 2026-0202-0330
 import * as THREE from "https://esm.sh/three";
 import { Pane } from "https://cdn.skypack.dev/tweakpane@4.0.4";
 
@@ -207,7 +207,7 @@ const slideData = [
   {
     title: "IN BETWEEN",
     number: "01",
-    description: "where things are still forming",
+    description: "where things<br>are still forming",
     link: "#"
   },
   {
@@ -219,7 +219,7 @@ const slideData = [
   {
     title: "FILMS",
     number: "03",
-    description: "shaping me<br>slowly and quietly",
+    description: "shaping me<br>slowly<br>and quietly",
     link: "#"
   },
   {
@@ -452,6 +452,65 @@ const updateTitlePositions = () => {
     titleData.element.style.filter = `blur(${blur}px)`;
   });
 };
+
+// Drag and scroll functionality
+let isDragging = false;
+let dragStartX = 0;
+let dragLastX = 0;
+
+canvas.addEventListener("mousedown", (e) => {
+  isDragging = true;
+  dragStartX = e.clientX;
+  dragLastX = dragStartX;
+  canvas.style.cursor = "grabbing";
+});
+
+window.addEventListener("mousemove", (e) => {
+  if (!isDragging) return;
+  const mouseX = e.clientX;
+  const deltaX = mouseX - dragLastX;
+  lastDeltaX = deltaX;
+  accumulatedMovement += deltaX;
+  const now = performance.now();
+  const timeDelta = now - lastMovementInput;
+  if (Math.abs(accumulatedMovement) > 1 || timeDelta > 50) {
+    dragLastX = mouseX;
+    const dragStrength = Math.abs(accumulatedMovement) * 0.02;
+    targetDistortionFactor = Math.min(
+      1.0,
+      targetDistortionFactor + dragStrength
+    );
+    targetPosition -= accumulatedMovement * settings.touchSensitivity;
+    accumulatedMovement = 0;
+    lastMovementInput = now;
+  }
+});
+
+window.addEventListener("mouseup", () => {
+  if (!isDragging) return;
+  isDragging = false;
+  canvas.style.cursor = "grab";
+  const velocity = (dragLastX - dragStartX) * 0.005;
+  if (Math.abs(velocity) > 0.5) {
+    autoScrollSpeed = -velocity * settings.momentumMultiplier * 0.05;
+    targetDistortionFactor = Math.min(
+      1.0,
+      Math.abs(velocity) * 3 * settings.distortionSensitivity
+    );
+    movementDirection.x = Math.sign(velocity) * -1;
+    isScrolling = true;
+    setTimeout(() => {
+      isScrolling = false;
+    }, 800);
+  }
+});
+
+window.addEventListener("mouseleave", () => {
+  if (isDragging) {
+    isDragging = false;
+    canvas.style.cursor = "grab";
+  }
+});
 
 window.addEventListener("keydown", (e) => {
   if (e.key === "ArrowLeft") {
