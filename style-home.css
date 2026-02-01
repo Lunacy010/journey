@@ -1,4 +1,4 @@
-/* Version: 2026-0202-0600 */
+/* Version: 2026-0202-0700 */
 @import url("https://fonts.cdnfonts.com/css/thegoodmonolith");
 @import url("https://fonts.cdnfonts.com/css/pp-neue-montreal");
 
@@ -35,6 +35,24 @@ body {
 
 .skip-to-main:focus {
   top: 0;
+}
+
+/* Logo in top left corner */
+.logo-container {
+  position: fixed;
+  top: 2em;
+  left: 2em;
+  z-index: 1000;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+.site-logo {
+  width: 60px;
+  height: auto;
+  display: block;
+  mix-blend-mode: difference;
+  filter: brightness(0) invert(1);
 }
 
 /* Dust/Scratches background effect for the entire site */
@@ -399,6 +417,15 @@ footer {
 
 /* Responsive Design */
 @media screen and (max-width: 1024px) {
+  .site-logo {
+    width: 50px;
+  }
+  
+  .logo-container {
+    top: 1.5em;
+    left: 1.5em;
+  }
+  
   .title-text {
     font-size: 8vw;
   }
@@ -417,6 +444,15 @@ footer {
 }
 
 @media screen and (max-width: 768px) {
+  .site-logo {
+    width: 45px;
+  }
+  
+  .logo-container {
+    top: 1.2em;
+    left: 1.2em;
+  }
+  
   .title-text {
     font-size: 10vw;
   }
@@ -477,6 +513,15 @@ footer {
 }
 
 @media screen and (max-width: 480px) {
+  .site-logo {
+    width: 40px;
+  }
+  
+  .logo-container {
+    top: 1em;
+    left: 1em;
+  }
+  
   .title-text {
     font-size: 12vw;
   }
@@ -580,6 +625,15 @@ button:focus-visible {
 
 /* Landscape mobile optimization */
 @media screen and (max-height: 600px) and (orientation: landscape) {
+  .site-logo {
+    width: 35px;
+  }
+  
+  .logo-container {
+    top: 0.8em;
+    left: 0.8em;
+  }
+  
   .description-text {
     font-size: 3vw;
   }

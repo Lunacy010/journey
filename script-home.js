@@ -1,4 +1,4 @@
-// Version: 2026-0202-0600
+// Version: 2026-0202-0700
 import * as THREE from "https://esm.sh/three";
 import { Pane } from "https://cdn.skypack.dev/tweakpane@4.0.4";
 
@@ -107,7 +107,7 @@ const createPreloader = () => {
       setTimeout(() => {
         const preloader = document.querySelector(".preloader");
         const mainElements = document.querySelectorAll(
-          "#canvas, .particles, #titles-container, footer"
+          "#canvas, .particles, #titles-container, footer, .logo-container"
         );
         // Fade in main content
         mainElements.forEach((el) => {
@@ -330,7 +330,7 @@ const fragmentShader = `
 // Load images and create slides (only 4 images now)
 for (let i = 0; i < slideCount; i++) {
   const imageIndex = (i % imagesCount) + 1;
-  const imagePath = `image-0/0${imageIndex}.webp`;
+  const imagePath = `image-01/0${imageIndex}.webp`;
   
   const texture = textureLoader.load(
     imagePath,
