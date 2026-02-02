@@ -1,4 +1,4 @@
-// Version: 2026-0202-0730
+// Version: 2026-0202-0800
 import * as THREE from "https://esm.sh/three";
 import { Pane } from "https://cdn.skypack.dev/tweakpane@4.0.4";
 
@@ -138,11 +138,11 @@ const updateLogoStretch = () => {
   // Smooth interpolation
   logoStretchX += (logoTargetStretchX - logoStretchX) * 0.15;
   
-  // Apply transform with stretch effect
+  // Apply transform with enhanced stretch effect
   if (Math.abs(logoStretchX) > 0.01) {
-    const scaleX = 1 + Math.abs(logoStretchX) * 0.3;
-    const scaleY = 1 - Math.abs(logoStretchX) * 0.15;
-    const translateX = logoStretchX * 10;
+    const scaleX = 1 + Math.abs(logoStretchX) * 0.8;  // Increased from 0.3 to 0.8
+    const scaleY = 1 - Math.abs(logoStretchX) * 0.4;  // Increased from 0.15 to 0.4
+    const translateX = logoStretchX * 30;  // Increased from 10 to 30
     logo.style.transform = `translateX(${translateX}px) scaleX(${scaleX}) scaleY(${scaleY})`;
   } else {
     logo.style.transform = 'translateX(0) scaleX(1) scaleY(1)';
@@ -156,6 +156,35 @@ const updateLogoStretch = () => {
 
 // Start logo stretch animation loop
 updateLogoStretch();
+
+// Background parallax effect
+const backgroundParallax = document.querySelector('.background-parallax');
+let parallaxX = 0;
+let parallaxTargetX = 0;
+
+const updateParallax = () => {
+  // Smooth interpolation
+  parallaxX += (parallaxTargetX - parallaxX) * 0.1;
+  
+  // Limit parallax movement to prevent showing background (10% padding on each side)
+  const maxParallax = window.innerWidth * 0.08; // 8% of screen width
+  parallaxX = Math.max(-maxParallax, Math.min(maxParallax, parallaxX));
+  
+  // Apply parallax transform (opposite direction of scroll)
+  if (Math.abs(parallaxX) > 0.01) {
+    backgroundParallax.style.transform = `translate(${parallaxX}px, 0)`;
+  } else {
+    backgroundParallax.style.transform = 'translate(0, 0)';
+  }
+  
+  // Decay
+  parallaxTargetX *= 0.95;
+  
+  requestAnimationFrame(updateParallax);
+};
+
+// Start parallax animation loop
+updateParallax();
 
 // Create ambient particles.
 const particlesContainer = document.getElementById("particles");
@@ -522,8 +551,11 @@ window.addEventListener("mousemove", (e) => {
   lastDeltaX = deltaX;
   accumulatedMovement += deltaX;
   
-  // Update logo stretch based on drag direction
-  logoTargetStretchX = Math.sign(deltaX) * Math.min(1, Math.abs(deltaX) * 0.05);
+  // Update logo stretch based on drag direction (enhanced sensitivity)
+  logoTargetStretchX = Math.sign(deltaX) * Math.min(1.5, Math.abs(deltaX) * 0.15);
+  
+  // Update background parallax (opposite direction, reduced movement)
+  parallaxTargetX -= deltaX * 0.3;
   
   const now = performance.now();
   const timeDelta = now - lastMovementInput;
@@ -583,8 +615,11 @@ window.addEventListener(
   (e) => {
     e.preventDefault();
     
-    // Update logo stretch based on wheel direction
-    logoTargetStretchX = Math.sign(e.deltaY) * -0.5;
+    // Update logo stretch based on wheel direction (enhanced)
+    logoTargetStretchX = Math.sign(e.deltaY) * -1.2;
+    
+    // Update background parallax for wheel (opposite direction)
+    parallaxTargetX += e.deltaY * 0.1;
     
     const wheelStrength = Math.abs(e.deltaY) * 0.001;
     targetDistortionFactor = Math.min(
@@ -627,8 +662,11 @@ window.addEventListener(
     lastDeltaX = deltaX;
     accumulatedMovement += deltaX;
     
-    // Update logo stretch based on touch drag direction
-    logoTargetStretchX = Math.sign(deltaX) * Math.min(1, Math.abs(deltaX) * 0.05);
+    // Update logo stretch based on touch drag direction (enhanced)
+    logoTargetStretchX = Math.sign(deltaX) * Math.min(1.5, Math.abs(deltaX) * 0.15);
+    
+    // Update background parallax (opposite direction)
+    parallaxTargetX -= deltaX * 0.3;
     
     const now = performance.now();
     const timeDelta = now - lastMovementInput;
